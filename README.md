@@ -1,76 +1,89 @@
 # Customer Churn Prediction
 
 ## 📊 Overview
-End-to-end classification project to predict customer churn using machine learning on a real-world DTH customer dataset (11,000+ records, 19 features). The project identifies at-risk customers and provides actionable retention strategies.
+End-to-end classification project to predict customer churn using machine learning on a real-world e-commerce/DTH customer dataset (11,260 records, 17 features after preprocessing). The project identifies at-risk customers and provides actionable retention strategies.
 
 ## 🎯 Objective
-Build a predictive model to identify customers likely to churn, enabling proactive retention efforts and business strategy optimization.
+Build a predictive model to identify customers likely to churn, enabling proactive retention efforts and business strategy optimization based on Accuracy, F1 Score, Recall, Precision and AUC score.
 
 ## 🛠️ Technologies Used
 - **Python 3.8+**
 - **Pandas** - Data manipulation
 - **NumPy** - Numerical operations
-- **Scikit-learn** - ML algorithms (LR, RF, SVC, KNN)
-- **XGBoost** - Best performing classifier
+- **Scikit-learn** - ML algorithms (LR, LDA, KNN, Naive Bayes, Bagging, AdaBoost, Gradient Boosting, SVM)
 - **Matplotlib/Seaborn** - Visualizations
 - **Jupyter Notebook** - Analysis environment
 
 ## 🔍 Key Features
 - **EDA**: Comprehensive analysis of churn drivers — city tier, tenure, support interactions, payment preferences, account segment
-- **Data Cleaning**: Special character treatment, missing value imputation (dropped cols >30% missing), category standardization
-- **Encoding**: One-Hot Encoding for categorical variables (drop_first=True), StandardScaler for feature normalization
-- **Class Imbalance**: Handled via stratified train-test split
-- **Multiple Models**: 5 classifiers evaluated — Logistic Regression, Random Forest, SVC, KNN, XGBoost
-- **ROC-AUC Analysis**: Full ROC curve plotted for best model
-- **Business Segmentation**: At-risk customers segmented by city tier and revenue potential
+- **Data Cleaning**: Special character treatment (['$','@','&','#','*'] replaced with NaN), missing value imputation, columns >30% missing dropped, category standardization ('Super +' → 'Super Plus', 'M/F' → Male/Female)
+- **Class Imbalance**: Handled with **SMOTE** (balanced dataset: 13,112 resampled records) and 70:30 stratified train-test split
+- **Multiple Models**: 8 classifiers evaluated across default, GridSearchCV (CV), and SMOTE-balanced (SM) variants
+- **ROC-AUC Analysis**: Full ROC curve plotted and AUC computed for all models
+- **Business Segmentation**: Customer Loyalty vs Spending quadrant analysis; city-tier based churn mapping
 
 ## 📈 Key Predictors
-- Tenure
-- Monthly charges / Revenue
+- Tenure, Monthly Revenue
 - Account segment (Regular, Regular Plus, Super, Super Plus)
-- City tier
-- Customer support call frequency
-- Payment method
-- Marital status
-- Gender
+- City tier (Tier 1, 2, 3)
+- Customer support call frequency, Complaint status
+- Payment method (UPI, e-wallet, bank transfer)
+- Marital status, Gender
+- Coupon usage, Cashback amount
 
-## 📈 Model Performance Results
+## 📈 Model Performance — Full Comparison (Table 9 from Final Report)
 
-| Model | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
-|---|---|---|---|---|---|
-| Logistic Regression | ~0.78 | ~0.76 | ~0.72 | ~0.74 | ~0.85 |
-| K-Nearest Neighbors | ~0.80 | ~0.78 | ~0.74 | ~0.76 | ~0.87 |
-| Support Vector Classifier | ~0.81 | ~0.79 | ~0.75 | ~0.77 | ~0.88 |
-| Random Forest Classifier | ~0.84 | ~0.82 | ~0.79 | ~0.80 | ~0.91 |
-| **XGBoost Classifier (Best)** | **~0.86** | **~0.84** | **~0.81** | **~0.82** | **~0.92** |
+> CV = GridSearchCV tuned | SM = SMOTE balanced dataset
 
-### 🏆 Best Model — XGBoost Classifier
-- **Accuracy: ~86%**
-- **ROC-AUC: ~0.92**
-- **Precision: ~84%** | **Recall: ~81%** | **F1-Score: ~82%**
-- ROC Curve plotted and validated on held-out test set (80/20 stratified split)
+| Model | Train Accuracy | Test Accuracy | Test AUC Score |
+|---|---|---|---|
+| Logistic Regression | 83.91% | 83.98% | 0.75 |
+| Logistic Regression - CV | 83.92% | 83.94% | 0.752 |
+| Logistic Regression - SM | 68.21% | 67.87% | 0.748 |
+| LDA | 84.21% | 83.62% | 0.748 |
+| LDA - CV | 84.16% | 83.54% | 0.747 |
+| LDA - SM | 68.60% | 67.83% | 0.748 |
+| **KNN (Default — Best Model)** | **85.72%** | **84.04%** | **0.715** |
+| KNN - CV | 85.82% | 84.16% | 0.72 |
+| KNN - SM | 71.38% | 66.69% | 0.736 |
+| Naive Bayes | 28.06% | 28.98% | 0.721 |
+| Naive Bayes - SM | 55.6% | 29.75% | 0.708 |
+| Bagging | 86.24% | 84.28% | 0.794 |
+| Bagging - SM | 74.5% | 71.81% | 0.785 |
+| AdaBoosting | 83.88% | 83.95% | 0.752 |
+| AdaBoosting - SM | 67.85% | 68.56% | 0.747 |
+| Gradient Boosting | 84.77% | 84.13% | 0.774 |
+| Gradient Boosting - SM | 71.77% | 71.78% | 0.769 |
+| SVM | 85.29% | 84.31% | 0.754 |
+| SVM - CV | 86.33% | 84.31% | 0.751 |
+| SVM - SM | 74.09% | 71.99% | 0.75 |
 
-## 💡 Business Impact
-- Identified high-risk churn customer segments by city tier and account type
-- Proposed targeted retention campaigns for Super Plus and Regular Plus segments
-- Recommended loyalty programs for high-tenure, high-revenue customers
-- Enabled data-driven prioritization of customer support interventions
-- Potential to reduce revenue loss by focusing retention spend on predicted churners
+### 🏆 Best Model — KNN (Default, N_neighbours = 5)
+**Conclusion from Final Report:** *"KNN with default values outperforms all other models built, based on Accuracy, F1 score, Recall, Precision and AUC score."*
+- **Test Accuracy: 84.04%**
+- **Train Accuracy: 85.72%**
+- **AUC Score (Training): 0.749 | AUC Score (Testing): 0.715**
+- 70:30 train-test stratified split; SMOTE applied only on training data
+- Dataset: 7,882 train / 3,378 test (before SMOTE) | 13,112 train (after SMOTE)
 
-## 🎯 Recommendations
-1. Focus retention efforts on high-churn-risk city-tier 1 customers with short tenure
-2. Improve customer support response time for at-risk account segments
-3. Develop loyalty programs targeting Super and Super Plus customers
-4. Monitor model performance quarterly and retrain on new data
+## 💡 Business Impact & Recommendations
+- **Maximum churn from "Regular+" account segment** — targeted offers needed
+- **Single customers** contribute highest churn — bundle family plans recommended
+- Customers in **Tier-1 cities** have highest computer usage; visibility and UX investment needed
+- **Transactions via UPI and e-wallet are very low** — promote digital payment discounts
+- Complaints in the last 12 months show no direct churn correlation — monitor service quality
+- **Four Stages of Churn Management**: Acquire → Delight → Prevent → Retain
+- Businesses can bifurcate customers by spending patterns (Deal seeker / Tariff optimizer) for targeted strategies
 
 ## 💡 Key Learnings
-- Real-world data cleaning (special chars, mixed types, high-null columns)
-- One-Hot Encoding and StandardScaler pipeline
-- Stratified splitting for class balance preservation
-- Multi-model comparison with Accuracy, Precision, Recall, F1, ROC-AUC
-- Business translation of model outputs into retention strategy
+- Real-world data cleaning (special characters, mixed types, high-null columns)
+- SMOTE for class imbalance (9,364 non-churners vs 1,896 churners)
+- Stratified 70:30 split to preserve class distribution
+- Multi-model comparison: default, GridSearchCV, SMOTE variants
+- ROC-AUC curve plotting and interpretation
+- Business translation of model outputs into Four-Stage Churn Management strategy
 
 ## 👤 Author
-Mahesh G — Data Analyst & ML Engineer
+Mahesh G — Data Analyst & ML Engineer | MBA Data Science & Analytics, Jain University
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue) ![ML](https://img.shields.io/badge/ML-XGBoost-green) ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
+![Python](https://img.shields.io/badge/Python-3.8+-blue) ![ML](https://img.shields.io/badge/ML-KNN%20Best-green) ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
