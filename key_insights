@@ -1,0 +1,10 @@
+Customer Churn Prediction Project | Key insights
+
+•	Developed a predictive model to identify potential account churners using a real-world DTH customer dataset with over 11,000 entries and 19 features.
+•	Performed comprehensive data preprocessing, including missing value imputation, outlier treatment, label encoding, and normalization using Min-Max Scaling.
+•	Conducted in-depth exploratory data analysis (EDA) to identify key churn indicators such as city tier, account segment, and payment mode preferences.
+•	Built and evaluated 8 classification models, including Logistic Regression, KNN, SVC, Random Forest, XGB Classifier and KNN Classifier.
+•	Delivered an end-to-end ML solution with business-aligned recommendations, ensuring minimal financial risk while maximizing customer retention.
+•	Behavioral churn patterns, including higher churn rates among mobile app users, low coupon engagement, and traditional payment preferences like cash and UPI.
+•	Segmented at-risk accounts by city tier and revenue potential, enabling the design of targeted retention strategies with minimal cost impact to the business.
+•	Identified key churn indicators such as low customer tenure, frequent support interactions, and poor service scores using exploratory data analysis and feature importance from machine learning models.
